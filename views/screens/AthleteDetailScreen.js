@@ -8,7 +8,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
-
+// hello negro
 const AthleteDetailScreen = ({ athlete, onBack, onCategorySelect }) => {
   return (
     <SafeAreaView style={styles.container}>
