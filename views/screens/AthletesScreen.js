@@ -7,7 +7,7 @@ import SearchBar from "../components/SearchBar";
 const AthletesScreen = ({ onAthleteSelect }) => {
   const [athletes, setAthletes] = useState([]);
   const [sortAscending, setSortAscending] = useState(true);
-
+  // I changed this negros life
   useEffect(() => {
     // Load initial data
     setAthletes(AthleteController.getAthletes());
