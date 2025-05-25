@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,16 +8,18 @@ import {
   ScrollView,
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
+import InjuryController from "../../controllers/InjuryController";
 
 const InjuryRecordsScreen = ({ athlete, onBack, onInjuryCategorySelect }) => {
-  // Sample injury categories
-  const injuryCategories = [
-    { id: "1", name: "Ankle Injuries", count: "0 Records" },
-    { id: "2", name: "Leg Injuries", count: "0 Records" },
-    { id: "3", name: "Shoulder Injuries", count: "0 Records" },
-    { id: "4", name: "Finger Injuries", count: "0 Records" },
-    { id: "5", name: "Achilles Tendon Injuries", count: "0 Records" },
-  ];
+  const [injuryCategories, setInjuryCategories] = useState([]);
+
+  useEffect(() => {
+    // Fetch injury categories for this athlete
+    if (athlete) {
+      const categories = InjuryController.getInjuryCategories(athlete.id);
+      setInjuryCategories(categories);
+    }
+  }, [athlete]);
 
   return (
     <SafeAreaView style={styles.container}>

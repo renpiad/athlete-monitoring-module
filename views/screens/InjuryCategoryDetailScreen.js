@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,10 +8,34 @@ import {
   ScrollView,
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
+import InjuryController from "../../controllers/InjuryController";
 
 const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
-  // This would be populated with actual injury records from a database
-  const injuryRecords = [];
+  const [injuryRecords, setInjuryRecords] = useState([]);
+
+  useEffect(() => {
+    // Fetch injury records for this athlete and category
+    if (athlete && categoryName) {
+      const records = InjuryController.getInjuryRecordsByCategory(
+        athlete.id,
+        categoryName
+      );
+      setInjuryRecords(records);
+    }
+  }, [athlete, categoryName]);
+
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "in-recovery":
+        return "#FF9500"; // Orange
+      case "fully recovered":
+        return "#4CD964"; // Green
+      case "critical":
+        return "#FF3B30"; // Red
+      default:
+        return "#8E8E93"; // Gray
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -41,13 +65,39 @@ const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
         {/* Injury Records */}
         <View style={styles.recordsContainer}>
           {injuryRecords.length > 0 ? (
-            injuryRecords.map((record, index) => (
-              <View key={index} style={styles.recordItem}>
-                <Text style={styles.recordTitle}>{record.title}</Text>
-                <Text style={styles.recordDate}>{record.date}</Text>
-                <Text style={styles.recordDescription}>
-                  {record.description}
-                </Text>
+            injuryRecords.map((record) => (
+              <View key={record.id} style={styles.recordCard}>
+                <View style={styles.recordHeader}>
+                  <Text style={styles.recordDate}>{record.date}</Text>
+                  <View
+                    style={[
+                      styles.statusTag,
+                      { backgroundColor: getStatusColor(record.status) },
+                    ]}
+                  >
+                    <Text style={styles.statusText}>{record.status}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.recordInfoRow}>
+                  <Text style={styles.infoLabel}>Location</Text>
+                  <Text style={styles.infoValue}>{record.location}</Text>
+                </View>
+
+                <View style={styles.recordInfoRow}>
+                  <Text style={styles.infoLabel}>Severity</Text>
+                  <Text style={styles.infoValue}>{record.severity}</Text>
+                </View>
+
+                <View style={styles.recordInfoRow}>
+                  <Text style={styles.infoLabel}>Duration</Text>
+                  <Text style={styles.infoValue}>{record.duration}</Text>
+                </View>
+
+                <View style={styles.detailsSection}>
+                  <Text style={styles.infoLabel}>Details</Text>
+                  <Text style={styles.detailsText}>{record.details}</Text>
+                </View>
               </View>
             ))
           ) : (
@@ -77,7 +127,7 @@ const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F5F5F7",
   },
   content: {
     flex: 1,
@@ -111,7 +161,8 @@ const styles = StyleSheet.create({
   profileSection: {
     alignItems: "center",
     paddingVertical: 20,
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#FFFFFF",
+    marginBottom: 10,
   },
   avatarContainer: {
     marginBottom: 10,
@@ -133,34 +184,73 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   recordsContainer: {
-    padding: 15,
+    padding: 10,
   },
-  recordItem: {
-    backgroundColor: "#F8F8F8",
+  recordCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    marginBottom: 15,
     padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    borderLeftWidth: 4,
-    borderLeftColor: "#FF3B30",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
-  recordTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+  recordHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
   },
   recordDate: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 8,
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#333",
   },
-  recordDescription: {
+  statusTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: "white",
+  },
+  recordInfoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F0F0F0",
+  },
+  infoLabel: {
+    fontSize: 14,
+    color: "#666",
+    fontWeight: "500",
+  },
+  infoValue: {
     fontSize: 14,
     color: "#333",
+    fontWeight: "400",
+  },
+  detailsSection: {
+    marginTop: 10,
+  },
+  detailsText: {
+    fontSize: 14,
+    color: "#333",
+    marginTop: 5,
+    lineHeight: 20,
   },
   emptyState: {
     padding: 30,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    marginTop: 20,
   },
   emptyStateText: {
     fontSize: 16,
