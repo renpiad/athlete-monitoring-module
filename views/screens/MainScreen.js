@@ -12,6 +12,8 @@ import GamesScreen from "./GamesScreen";
 import AthleteDetailScreen from "./AthleteDetailScreen";
 import AttributesScreen from "./AttributesScreen";
 import GameStatsScreen from "./GameStatsScreen";
+import InjuryRecordsScreen from "./InjuryRecordsScreen";
+import InjuryCategoryDetailScreen from "./InjuryCategoryDetailScreen";
 
 const MainScreen = () => {
   const [activeTab, setActiveTab] = useState("Athletes");
@@ -19,6 +21,7 @@ const MainScreen = () => {
   const [selectedAthlete, setSelectedAthlete] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedGame, setSelectedGame] = useState(null);
+  const [selectedInjuryCategory, setSelectedInjuryCategory] = useState(null);
 
   const handleAddButton = () => {
     console.log(`Add ${activeTab === "Athletes" ? "Athlete" : "Game"}`);
@@ -43,11 +46,17 @@ const MainScreen = () => {
     setCurrentScreen("AthleteDetail");
   };
 
+  const handleBackToInjuryRecords = () => {
+    setCurrentScreen("InjuryRecords");
+  };
+
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
 
     if (category === "Attributes") {
       setCurrentScreen("Attributes");
+    } else if (category === "Injury Records") {
+      setCurrentScreen("InjuryRecords");
     } else {
       console.log(
         `Selected category: ${category} for athlete: ${
@@ -57,8 +66,13 @@ const MainScreen = () => {
     }
   };
 
+  const handleInjuryCategorySelect = (injuryCategory) => {
+    setSelectedInjuryCategory(injuryCategory);
+    setCurrentScreen("InjuryCategoryDetail");
+  };
+
   // Calculate bottom margin to accommodate navigation bar
-  const bottomMargin = Platform.OS === "ios" ? 70 : 60; // For Android
+  const bottomMargin = Platform.OS === "ios" ? 70 : 60;
 
   const renderScreen = () => {
     switch (currentScreen) {
@@ -97,6 +111,22 @@ const MainScreen = () => {
           <AttributesScreen
             athlete={selectedAthlete}
             onBack={handleBackToAthleteDetail}
+          />
+        );
+      case "InjuryRecords":
+        return (
+          <InjuryRecordsScreen
+            athlete={selectedAthlete}
+            onBack={handleBackToAthleteDetail}
+            onInjuryCategorySelect={handleInjuryCategorySelect}
+          />
+        );
+      case "InjuryCategoryDetail":
+        return (
+          <InjuryCategoryDetailScreen
+            athlete={selectedAthlete}
+            categoryName={selectedInjuryCategory}
+            onBack={handleBackToInjuryRecords}
           />
         );
       case "GameStats":
