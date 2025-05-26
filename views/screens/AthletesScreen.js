@@ -38,6 +38,7 @@ const AthletesScreen = ({ onAthleteSelect }) => {
         )}
         keyExtractor={(item) => item.id}
         style={styles.list}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -50,6 +51,9 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
+  },
+  listContent: {
+    paddingBottom: 120, // Increased padding to ensure last items are visible above the higher positioned add button
   },
 });
 

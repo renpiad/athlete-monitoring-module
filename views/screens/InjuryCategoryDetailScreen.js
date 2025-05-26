@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import BottomNavBar from "../components/BottomNavBar";
+import AddButton from "../components/AddButton";
 import InjuryController from "../../controllers/InjuryController";
 
 const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
@@ -23,6 +24,16 @@ const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
       setInjuryRecords(records);
     }
   }, [athlete, categoryName]);
+
+  const handleAddInjuryRecord = () => {
+    console.log(
+      "Add new injury record for athlete:",
+      athlete?.name,
+      "category:",
+      categoryName
+    );
+    // Logic to add a new injury record
+  };
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -48,75 +59,75 @@ const InjuryCategoryDetailScreen = ({ athlete, categoryName, onBack }) => {
         <View style={styles.placeholder} />
       </View>
 
-      <ScrollView style={styles.content}>
-        {/* Profile Section */}
-        <View style={styles.profileSection}>
-          <View style={styles.avatarContainer}>
-            <View style={styles.avatar} />
+      <View style={styles.mainContent}>
+        <ScrollView style={styles.content}>
+          {/* Profile Section */}
+          <View style={styles.profileSection}>
+            <View style={styles.avatarContainer}>
+              <View style={styles.avatar} />
+            </View>
+            <Text style={styles.playerName}>
+              {athlete?.name || "Player Name"}
+            </Text>
+            <Text style={styles.playerPosition}>
+              {athlete?.position || "Position"}
+            </Text>
           </View>
-          <Text style={styles.playerName}>
-            {athlete?.name || "Player Name"}
-          </Text>
-          <Text style={styles.playerPosition}>
-            {athlete?.position || "Position"}
-          </Text>
-        </View>
 
-        {/* Injury Records */}
-        <View style={styles.recordsContainer}>
-          {injuryRecords.length > 0 ? (
-            injuryRecords.map((record) => (
-              <View key={record.id} style={styles.recordCard}>
-                <View style={styles.recordHeader}>
-                  <Text style={styles.recordDate}>{record.date}</Text>
-                  <View
-                    style={[
-                      styles.statusTag,
-                      { backgroundColor: getStatusColor(record.status) },
-                    ]}
-                  >
-                    <Text style={styles.statusText}>{record.status}</Text>
+          {/* Injury Records */}
+          <View style={styles.recordsContainer}>
+            {injuryRecords.length > 0 ? (
+              injuryRecords.map((record) => (
+                <View key={record.id} style={styles.recordCard}>
+                  <View style={styles.recordHeader}>
+                    <Text style={styles.recordDate}>{record.date}</Text>
+                    <View
+                      style={[
+                        styles.statusTag,
+                        { backgroundColor: getStatusColor(record.status) },
+                      ]}
+                    >
+                      <Text style={styles.statusText}>{record.status}</Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.recordInfoRow}>
+                    <Text style={styles.infoLabel}>Location</Text>
+                    <Text style={styles.infoValue}>{record.location}</Text>
+                  </View>
+
+                  <View style={styles.recordInfoRow}>
+                    <Text style={styles.infoLabel}>Severity</Text>
+                    <Text style={styles.infoValue}>{record.severity}</Text>
+                  </View>
+
+                  <View style={styles.recordInfoRow}>
+                    <Text style={styles.infoLabel}>Duration</Text>
+                    <Text style={styles.infoValue}>{record.duration}</Text>
+                  </View>
+
+                  <View style={styles.detailsSection}>
+                    <Text style={styles.infoLabel}>Details</Text>
+                    <Text style={styles.detailsText}>{record.details}</Text>
                   </View>
                 </View>
-
-                <View style={styles.recordInfoRow}>
-                  <Text style={styles.infoLabel}>Location</Text>
-                  <Text style={styles.infoValue}>{record.location}</Text>
-                </View>
-
-                <View style={styles.recordInfoRow}>
-                  <Text style={styles.infoLabel}>Severity</Text>
-                  <Text style={styles.infoValue}>{record.severity}</Text>
-                </View>
-
-                <View style={styles.recordInfoRow}>
-                  <Text style={styles.infoLabel}>Duration</Text>
-                  <Text style={styles.infoValue}>{record.duration}</Text>
-                </View>
-
-                <View style={styles.detailsSection}>
-                  <Text style={styles.infoLabel}>Details</Text>
-                  <Text style={styles.detailsText}>{record.details}</Text>
-                </View>
+              ))
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>
+                  No injury records found for this category.
+                </Text>
+                <Text style={styles.emptyStateSubText}>
+                  Add a new record using the + button below.
+                </Text>
               </View>
-            ))
-          ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>
-                No injury records found for this category.
-              </Text>
-              <Text style={styles.emptyStateSubText}>
-                Add a new record using the + button below.
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+            )}
+          </View>
+        </ScrollView>
 
-      {/* Add Button */}
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
+        {/* Add Button */}
+        <AddButton onPress={handleAddInjuryRecord} />
+      </View>
 
       {/* Bottom Navigation */}
       <BottomNavBar activeTab="calendar" />
@@ -129,9 +140,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F5F5F7",
   },
+  mainContent: {
+    flex: 1,
+    paddingBottom: 120, // Increased padding for the higher positioned add button
+  },
   content: {
     flex: 1,
-    paddingBottom: 60, // Add space for bottom nav
   },
   header: {
     flexDirection: "row",
@@ -263,27 +277,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#999",
     textAlign: "center",
-  },
-  addButton: {
-    position: "absolute",
-    right: 20,
-    bottom: 80,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#FF3B30",
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-  },
-  addButtonText: {
-    fontSize: 30,
-    color: "#FFFFFF",
-    fontWeight: "bold",
   },
 });
 
