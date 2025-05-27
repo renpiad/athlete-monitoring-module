@@ -18,7 +18,7 @@ import RealTimeStats from "../components/RealTimeStats";
 import StatsSheetForm from "../components/StatsSheetForm";
 import QuarterScores from "../components/QuarterScores";
 import { useStats } from "../../context/StatsContext";
-import ReportGenerator from "../../components/ReportGenerator";
+import ReportGenerator from "../components/ReportGenerator";
 
 const GameStatsScreen = ({ game, onBack }) => {
   const {
