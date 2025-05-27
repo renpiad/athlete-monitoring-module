@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import { useStats } from "../context/StatsContext";
+import { useStats } from "../../context/StatsContext";
 
 const ReportGenerator = ({ onClose }) => {
   const { gameStats, validateStats } = useStats();
