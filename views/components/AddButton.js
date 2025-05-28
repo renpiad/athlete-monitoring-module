@@ -1,54 +1,45 @@
 import React from "react";
-import {
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Platform,
-  Dimensions,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { TouchableOpacity, Text, StyleSheet, Dimensions } from "react-native";
 
-const AddButton = ({ onPress, style }) => {
-  const insets = useSafeAreaInsets();
-  const { width } = Dimensions.get("window");
-
-  // Calculate bottom position based on safe area
-  const bottomPosition =
-    Platform.OS === "ios" ? Math.max(insets.bottom, 20) + 40 : 100;
-
+const AddButton = ({ onPress }) => {
   return (
-    <TouchableOpacity
-      style={[styles.addButton, { bottom: bottomPosition }, style]}
-      onPress={onPress}
-    >
+    <TouchableOpacity style={styles.addButton} onPress={onPress}>
       <Text style={styles.addButtonText}>+</Text>
     </TouchableOpacity>
   );
 };
 
+const windowWidth = Dimensions.get("window").width;
+const buttonSize = Math.min(windowWidth * 0.13, 50); // 13% of screen width, max 50px
+
 const styles = StyleSheet.create({
   addButton: {
-    position: "absolute",
-    right: 20,
-    width: 55,
-    height: 55,
-    backgroundColor: "red",
-    borderRadius: 12,
-    elevation: 5,
-    shadowColor: "#000000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
+    position: "relative",
+    alignSelf: "flex-end",
+    marginRight: windowWidth * 0.05, // 5% of screen width
+    marginBottom: 20,
+    width: buttonSize,
+    height: buttonSize,
+    backgroundColor: "#FF3B30",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 999,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   addButtonText: {
+    fontSize: buttonSize * 0.64, // 64% of button size
     color: "#FFFFFF",
-    fontSize: 30,
     fontWeight: "bold",
+    lineHeight: buttonSize * 0.64,
     textAlign: "center",
-    lineHeight: 30,
+    includeFontPadding: false,
+    textAlignVertical: "center",
   },
 });
 

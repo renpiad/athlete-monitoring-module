@@ -106,7 +106,6 @@ const MainScreen = () => {
                 <GamesScreen onGameSelect={handleGameSelect} />
               )}
             </View>
-            <AddButton onPress={handleAddButton} />
             <BottomNavBar
               activeTab={activeTab === "Athletes" ? "home" : "calendar"}
             />

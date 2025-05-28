@@ -3,11 +3,14 @@ import { FlatList, View, StyleSheet } from "react-native";
 import AthleteController from "../../controllers/AthleteController";
 import AthleteItem from "../components/AthleteItem";
 import SearchBar from "../components/SearchBar";
+import AddAthleteForm from "../components/AddAthleteForm";
+import AddButton from "../components/AddButton";
 
 const AthletesScreen = ({ onAthleteSelect }) => {
   const [athletes, setAthletes] = useState([]);
   const [sortAscending, setSortAscending] = useState(true);
-  // I changed this negros life
+  const [showAddForm, setShowAddForm] = useState(false);
+
   useEffect(() => {
     // Load initial data
     setAthletes(AthleteController.getAthletes());
@@ -28,6 +31,11 @@ const AthletesScreen = ({ onAthleteSelect }) => {
     }
   };
 
+  const handleAddAthlete = (newAthlete) => {
+    const addedAthlete = AthleteController.addAthlete(newAthlete);
+    setAthletes(AthleteController.getAthletes());
+  };
+
   return (
     <View style={styles.container}>
       <SearchBar onSearch={handleSearch} onSort={handleSort} />
@@ -39,6 +47,12 @@ const AthletesScreen = ({ onAthleteSelect }) => {
         keyExtractor={(item) => item.id}
         style={styles.list}
         contentContainerStyle={styles.listContent}
+      />
+      <AddButton onPress={() => setShowAddForm(true)} />
+      <AddAthleteForm
+        visible={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        onSubmit={handleAddAthlete}
       />
     </View>
   );
